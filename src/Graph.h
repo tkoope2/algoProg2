@@ -572,12 +572,12 @@ class graph {
             report[v].pred = u;
             report[v].state = DISCOVERED;
 
-            report[v].npaths = report[u].npaths;//!
+            report[v].npaths = report[u].npaths;//! Correct change
 
             // enqueue newly discovered vertex
             q.push(v);
-          }
-          else if(report[v].dist == report[u].dist + 1){//V is already discovered and another shortest path is discovered
+          }else if(report[v].dist == report[u].dist + 1){//V is already discovered and another shortest path is discovered
+            
             report[v].npaths += report[u].npaths;
           }
         }
@@ -753,6 +753,12 @@ class graph {
      *        is stored in the int vector path (sequence of vertex
      *        IDs ENDING WITH dest -- i.e., in "forward order").
      *
+     * ?
+     * Check path size < 0; false
+     * Extract vector values
+     * ?
+     * 
+     * 
      *     parameters:
      *       rpt:  vector of vertex labels associated with given
      *             graph (calling object).  Presumption:  labels
