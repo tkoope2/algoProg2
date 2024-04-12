@@ -1,0 +1,48 @@
+9c9
+< @     PATH: <>
+---
+> @     PATH: <a4 a1>
+11c11
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2>
+13c13
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3>
+15c15
+< @     PATH: <>
+---
+> @     PATH: <a4>
+17c17
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4 b1>
+19c19
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4 b1 b2>
+21c21
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3>
+23c23
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4>
+25c25
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4 b1 b2 c2 c3 c4 c1>
+27c27
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4 b1 b2 c2>
+29c29
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4 b1 b2 c2 c3>
+31c31
+< @     PATH: <>
+---
+> @     PATH: <a4 a1 a2 a3 b3 b4 b1 b2 c2 c3 c4>

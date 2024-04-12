@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+
+
+RED="\e[31m"
+GREEN="\e[32m"
+BOLD="\e[1;30m"
+RESET="\e[0m"
+
+  # $1 : number
+  # $2 : name / cmd-line
+  # $3 : poss-points
+  # $4 : pts
+  # $5 : separator
+  write_json() {
+
+
+    echo -e "  {" >> _tests.json
+    echo -e "      \"number\" : \"$1\" ," >> _tests.json
+    echo -e "      \"name\" : \"$2\" ," >> _tests.json
+    echo -e "      \"visibility\" : \"visible\" ," >> _tests.json
+    echo -e      "      \"max_score\" : $3 ,"      >> _tests.json      
+    echo -e      "      \"score\" : $4"   >> _tests.json            
+    echo -e "  } $5" >> _tests.json
+
+  }
+
+
+
+  # usage: runtest <command> <test-name> <points> <gs-prog-num> <sep>
+  runtest () {
+    # comment out line below once reference files have been generated
+      # $1 | grep ^@ > $2.ref
+
+    echo -e  "${BOLD}"
+    echo -e "------------------------------------------------------------"
+    echo -e ">>> START TEST NUM $4; TEST NAME: \"$2\"; CMD: \"$1\">>>>"
+    echo -e "${RESET}"
+
+    $1 | grep ^@ > $2.out
+    diff $2.out $2.ref > $2.diff
+    diff=`wc -c < $2.diff`
+    let score=0
+    if [ $diff = 0 ]; then
+       let "score = $3"
+    else
+       echo -e "${RED}"
+       echo -e "TEST FAILED"
+       echo -e "${RESET}"
+       echo -e "${GREEN}"
+       echo -e "--- EXPECTED OUTPUT: "
+       cat $2.ref
+       echo -e "${RED}"
+       echo -e "--- YOUR OUTPUT: "
+       cat $2.out
+       echo -e "-------------------------"
+       echo -e "${RESET}"
+    fi
+    let "max = $max + $3"
+    let "total = $total + $score"
+
+    echo -e "${BOLD}"
+    echo -e "      TEST $4 score:  $score / $3"
+    echo -e "=========== END TEST $4 ======================================"
+    echo -e "${RESET}"
+
+    # write_json <prob-num> <tst-name> <poss-pts> <rec-pts> <separator>
+    write_json $4 $2 $3 $score $5
+  }
+
+  runtest_sort () {
+    # comment out line below once reference files have been generated
+
+     # $1 | grep ^@ | sort > $2.ref
+
+    echo -e "${BOLD}"
+    echo -e "------------------------------------------------------------"
+    echo -e ">>> START TEST NUM $4; TEST NAME: \"$2\"; CMD: \"$1\">>>>"
+    echo -e "${RESET}"
+
+    $1 | grep ^@ | sort > $2.out
+    diff $2.out $2.ref > $2.diff
+    diff=`wc -c < $2.diff`
+    let score=0
+    if [ $diff = 0 ]; then
+       echo -e "TEST PASSED"
+       let "score = $3"
+    else
+       echo -e "TEST FAILED"
+       echo -e "--- EXPECTED OUTPUT: "
+       cat $2.ref
+       echo -e "--- YOUR OUTPUT (AFTER SORTING TO CANONICAL FORM): "
+       cat $2.out
+       echo -e "-------------------------"
+    fi
+    let "max = $max + $3"
+    let "total = $total + $score"
+
+    echo -e "test $2 ; cmd: $1 ; score:  $score / $3"
+    # write_json <prob-num> <tst-name> <poss-pts> <rec-pts> <separator>
+    write_json $4 $2 $3 $score $5
+  }
+
+  timetest () {
+    # comment out line below once reference files have been generated
+    
+      # /usr/bin/time -p  $1  | grep ^@ > $2.ref
+
+    echo -e
+    echo -e ">>> START TEST NUM $4; TEST NAME: \"$2\"; CMD: \"$1\">>>>"
+
+    rm -f ./_time
+
+     /usr/bin/time -p -q -f "%U" -o ./_time  $1   | grep ^@ > $2.out   
+
+    diff $2.out $2.ref > $2.diff
+    diff=`wc -c < $2.diff`
+    let score=0
+    if [ $diff = 0 ]; then
+       echo -e "!FUNCTIONAL TEST:  PASSED"
+       t="`cat _time`"
+       echo -e "   elapsed time: $t"
+       cmp="$t <= $6"
+       echo "cmp string: $cmp"
+       if [ `echo $cmp | bc` ]; then
+         echo -e "ALSO PASSED RUNTIME TEST!"
+         let "score =  $3"
+       else
+         echo -e "...BUT FAILED RUNTIME TEST - SORRY, NO CREDIT"
+         echo -e "   max allowed:  $6"
+         echo -e "   your time:    $t"
+       fi
+    else
+       echo -e "!FUNCTIONAL TEST:  FAILED"
+       echo -e "--- EXPECTED OUTPUT: "
+       cat $2.ref
+       echo -e "--- YOUR OUTPUT: "
+       cat $2.out
+       echo -e "-------------------------"
+    fi
+    # echo -e "!USER TIME ABOVE MUST ALSO BE < 0.1 SECONDS TO PASS"
+
+    echo -e "! test $2 ; cmd: $1 ; score: $score / $3"
+    # write_json <prob-num> <tst-name> <poss-pts> <rec-pts> <separator>
+    write_json $4 $2 $3 $score $5
+  }
+
+  #
+  cp /autograder/source/* . &> /dev/null
+  rm Graph.h
+  cp /autograder/submission/Graph*.h Graph.h &> /dev/null
+
+  make clean
+  rm -f *.out
+
+  make -i
+  rm -f _tests.json
+
+  let total=0
+  let max=0
+
+  runtest "./bfs rings.g c1" "bfs1" 2 1.1 ","
+  runtest "./bfs rings.g c4" "bfs2" 2 1.2 ","
+  runtest "./bfs torus6x6.g v1_1" "bfs3" 2 1.3 ","
+  runtest "./bfs torus6x6.g v1_3" "bfs4" 2 1.4 ","
+  runtest "./bfs chain20.g v5" "bfs5" 2 1.5 ","
+
+  runtest "./dfs rings.g c1" "extract1" 4 2.1 ","
+  runtest "./dfs rings.g a4" "extract2" 4 2.2 ","
+  runtest "./dfs torus6x6.g v1_1" "extract3" 4 2.3 ","
+  runtest "./dfs torus6x6.g v3_4" "extract4" 4 2.4 ","
+  runtest "./dfs chain20.g v5" "extract5" 4 2.5 ","
+
+  runtest "./cpaths_basic chain10.g" "crit-paths1" 5 3.1 ","
+  runtest "./cpaths_verbose chain10.g" "crit-paths2" 5 3.2 ","
+  runtest "./cpaths_basic ladder10.g" "crit-paths3" 5 3.3 ","
+  runtest "./cpaths_verbose ladder10.g" "crit-paths4" 5 3.4 ","
+  timetest "./cpaths_basic ladder20.g" "crit-paths5" 5 3.5 "," 0.1
+  timetest "./cpaths_basic chain30.g" "crit-paths6" 5 3.6 "," 0.1
+
+  
+  runtest "./npaths chain10.g" "num-paths1" 10 4.1 ","
+  runtest "./npaths ladder10.g" "num-paths2" 10 4.2 ","
+  timetest "./npaths ladder20.g" "num-paths3" 5 4.3 "," 0.1
+  timetest "./npaths chain30.g" "num-paths4" 5 4.4 "," 0.1
+
+  # runtest "./vtopo chain10.g chain_1.o" "vtopo1" 5 5.1 ","
+  # runtest "./vtopo chain10.g chain_2.o" "vtopo2" 5 5.2 ","
+
+  runtest "./vtopo chain10.g chain_1.o" "vtopo1" 5 5.1 ","
+  runtest "./vtopo chain10.g chain_2.o" "vtopo2" 5 5.2 ","
+  runtest "./vtopo aladder.g aladder_1.o" "vtopo3" 5 5.3 ","
+  runtest "./vtopo aladder.g aladder_2.o" "vtopo4" 5 5.4 ","
+
+  runtest_sort "./epaths ladder10.g a8" "enum1" 6 6.1 ","
+  runtest_sort "./epaths chain10.g v7" "enum2" 6 6.2 ","
+  runtest_sort "./epaths aladder.g b5" "enum3" 6 6.3 ","
+  runtest_sort "./epaths chain20.g v6" "enum4" 6 6.4 ","
+  runtest_sort "./epaths ladder20.g a7" "enum5" 6 6.5 ""
+
+  rm -f results.json
+  cat _header.json _tests.json _trailer.json > results.json
+
+  cp results.json /autograder/results.json
+  cp results.json /autograder/results/results.json
+
+  echo -e
+  echo -e PARTIAL SCORE:  $total "/" $max
+
+ 
+
+  
+

@@ -1,0 +1,8 @@
+{ 
+  "output_format" : "ansi",
+  "test_output_format" : "ansi",
+  "test_name_format" : "ansi",
+  "stdout_visibility" : "visible" ,
+  "stderr_visibility" : "visible" ,
+         "tests" :
+           [

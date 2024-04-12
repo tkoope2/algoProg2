@@ -1,0 +1,356 @@
+./batch: line 6: u: command not found
+make: Nothing to be done for `all'.
+
+>>> START TEST >>>>
+./bfs rings.g c1:  ./bfs rings.g c1
+test bfs1 ; cmd: ./bfs rings.g c1 ; score:  2 / 2
+write_json params:
+1.1
+bfs1
+2
+2
+,
+end write_json params
+
+>>> START TEST >>>>
+./bfs rings.g c4:  ./bfs rings.g c4
+test bfs2 ; cmd: ./bfs rings.g c4 ; score:  2 / 2
+write_json params:
+1.2
+bfs2
+2
+2
+,
+end write_json params
+
+>>> START TEST >>>>
+./bfs torus6x6.g v1_1:  ./bfs torus6x6.g v1_1
+test bfs3 ; cmd: ./bfs torus6x6.g v1_1 ; score:  2 / 2
+write_json params:
+1.3
+bfs3
+2
+2
+,
+end write_json params
+
+>>> START TEST >>>>
+./bfs torus6x6.g v1_3:  ./bfs torus6x6.g v1_3
+test bfs4 ; cmd: ./bfs torus6x6.g v1_3 ; score:  2 / 2
+write_json params:
+1.4
+bfs4
+2
+2
+,
+end write_json params
+
+>>> START TEST >>>>
+./bfs chain20.g v5:  ./bfs chain20.g v5
+test bfs5 ; cmd: ./bfs chain20.g v5 ; score:  2 / 2
+write_json params:
+1.5
+bfs5
+2
+2
+,
+end write_json params
+
+>>> START TEST >>>>
+./dfs rings.g c1:  ./dfs rings.g c1
+test extract1 ; cmd: ./dfs rings.g c1 ; score:  4 / 4
+write_json params:
+2.1
+extract1
+4
+4
+,
+end write_json params
+
+>>> START TEST >>>>
+./dfs rings.g a4:  ./dfs rings.g a4
+test extract2 ; cmd: ./dfs rings.g a4 ; score:  4 / 4
+write_json params:
+2.2
+extract2
+4
+4
+,
+end write_json params
+
+>>> START TEST >>>>
+./dfs torus6x6.g v1_1:  ./dfs torus6x6.g v1_1
+test extract3 ; cmd: ./dfs torus6x6.g v1_1 ; score:  4 / 4
+write_json params:
+2.3
+extract3
+4
+4
+,
+end write_json params
+
+>>> START TEST >>>>
+./dfs torus6x6.g v3_4:  ./dfs torus6x6.g v3_4
+test extract4 ; cmd: ./dfs torus6x6.g v3_4 ; score:  4 / 4
+write_json params:
+2.4
+extract4
+4
+4
+,
+end write_json params
+
+>>> START TEST >>>>
+./dfs chain20.g v5:  ./dfs chain20.g v5
+test extract5 ; cmd: ./dfs chain20.g v5 ; score:  4 / 4
+write_json params:
+2.5
+extract5
+4
+4
+,
+end write_json params
+
+>>> START TEST >>>>
+./cpaths_basic chain10.g:  ./cpaths_basic chain10.g
+test crit-paths1 ; cmd: ./cpaths_basic chain10.g ; score:  5 / 5
+write_json params:
+3.1
+crit-paths1
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./cpaths_verbose chain10.g:  ./cpaths_verbose chain10.g
+test crit-paths2 ; cmd: ./cpaths_verbose chain10.g ; score:  5 / 5
+write_json params:
+3.2
+crit-paths2
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./cpaths_basic ladder10.g:  ./cpaths_basic ladder10.g
+test crit-paths3 ; cmd: ./cpaths_basic ladder10.g ; score:  5 / 5
+write_json params:
+3.3
+crit-paths3
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./cpaths_verbose ladder10.g:  ./cpaths_verbose ladder10.g
+test crit-paths4 ; cmd: ./cpaths_verbose ladder10.g ; score:  5 / 5
+write_json params:
+3.4
+crit-paths4
+5
+5
+,
+end write_json params
+
+!>>> START TEST >>>>
+real 0.02
+user 0.01
+sys 0.00
+!FUNCTIONAL TEST:  PASSED
+!USER TIME ABOVE MUST ALSO BE < 0.1 SECONDS TO PASS
+! test crit-paths5 ; cmd: ./cpaths_basic ladder20.g ; score:  _______ / 5
+write_json params:
+3.5
+./cpaths_basic
+ladder20.g
+5
+0
+end write_json params
+
+!>>> START TEST >>>>
+real 0.01
+user 0.00
+sys 0.00
+!FUNCTIONAL TEST:  PASSED
+!USER TIME ABOVE MUST ALSO BE < 0.1 SECONDS TO PASS
+! test crit-paths6 ; cmd: ./cpaths_basic chain30.g ; score:  _______ / 5
+write_json params:
+3.6
+./cpaths_basic
+chain30.g
+5
+0
+end write_json params
+
+>>> START TEST >>>>
+./npaths chain10.g:  ./npaths chain10.g
+test num-paths1 ; cmd: ./npaths chain10.g ; score:  10 / 10
+write_json params:
+4.1
+num-paths1
+10
+10
+,
+end write_json params
+
+>>> START TEST >>>>
+./npaths ladder10.g:  ./npaths ladder10.g
+test num-paths2 ; cmd: ./npaths ladder10.g ; score:  10 / 10
+write_json params:
+4.2
+num-paths2
+10
+10
+,
+end write_json params
+
+!>>> START TEST >>>>
+real 0.01
+user 0.00
+sys 0.00
+!FUNCTIONAL TEST:  PASSED
+!USER TIME ABOVE MUST ALSO BE < 0.1 SECONDS TO PASS
+! test num-paths3 ; cmd: ./npaths ladder20.g ; score:  _______ / 5
+write_json params:
+4.3
+./npaths
+ladder20.g
+5
+0
+end write_json params
+
+!>>> START TEST >>>>
+real 0.01
+user 0.00
+sys 0.00
+!FUNCTIONAL TEST:  PASSED
+!USER TIME ABOVE MUST ALSO BE < 0.1 SECONDS TO PASS
+! test num-paths4 ; cmd: ./npaths chain30.g ; score:  _______ / 5
+write_json params:
+4.4
+./npaths
+chain30.g
+5
+0
+end write_json params
+
+>>> START TEST >>>>
+./vtopo chain10.g chain_1.o:  ./vtopo chain10.g chain_1.o
+test vtopo1 ; cmd: ./vtopo chain10.g chain_1.o ; score:  5 / 5
+write_json params:
+5.1
+vtopo1
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./vtopo chain10.g chain_2.o:  ./vtopo chain10.g chain_2.o
+test vtopo2 ; cmd: ./vtopo chain10.g chain_2.o ; score:  5 / 5
+write_json params:
+5.2
+vtopo2
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./vtopo chain10.g chain_1.o:  ./vtopo chain10.g chain_1.o
+test vtopo1 ; cmd: ./vtopo chain10.g chain_1.o ; score:  5 / 5
+write_json params:
+6.1
+vtopo1
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./vtopo chain10.g chain_2.o:  ./vtopo chain10.g chain_2.o
+test vtopo2 ; cmd: ./vtopo chain10.g chain_2.o ; score:  5 / 5
+write_json params:
+6.2
+vtopo2
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./vtopo aladder.g aladder_1.o:  ./vtopo aladder.g aladder_1.o
+test vtopo3 ; cmd: ./vtopo aladder.g aladder_1.o ; score:  5 / 5
+write_json params:
+6.3
+vtopo3
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+./vtopo aladder.g aladder_2.o:  ./vtopo aladder.g aladder_2.o
+test vtopo4 ; cmd: ./vtopo aladder.g aladder_2.o ; score:  5 / 5
+write_json params:
+6.4
+vtopo4
+5
+5
+,
+end write_json params
+
+>>> START TEST >>>>
+test enum1 ; cmd: ./epaths ladder10.g a8 ; score:  6 / 6
+write_json params:
+7.1
+./epaths
+ladder10.g
+a8
+6
+end write_json params
+
+>>> START TEST >>>>
+test enum2 ; cmd: ./epaths chain10.g v7 ; score:  6 / 6
+write_json params:
+7.2
+./epaths
+chain10.g
+v7
+6
+end write_json params
+
+>>> START TEST >>>>
+test enum3 ; cmd: ./epaths aladder.g b5 ; score:  6 / 6
+write_json params:
+7.3
+./epaths
+aladder.g
+b5
+6
+end write_json params
+
+>>> START TEST >>>>
+test enum4 ; cmd: ./epaths chain20.g v6 ; score:  6 / 6
+write_json params:
+7.4
+./epaths
+chain20.g
+v6
+6
+end write_json params
+
+>>> START TEST >>>>
+test enum5 ; cmd: ./epaths ladder20.g a7 ; score:  6 / 6
+write_json params:
+7.5
+./epaths
+ladder20.g
+a7
+6
+end write_json params
+
+PARTIAL SCORE: 130 / 150

@@ -1,0 +1,4 @@
+8c8
+< @      RESULT: valid_topo_order() SAYS:  YES!
+---
+> @      RESULT: valid_topo_order() SAYS:  NO!
