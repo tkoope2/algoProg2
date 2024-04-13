@@ -17,6 +17,8 @@ using std::unordered_set;
 #define ACTIVE       'a'
 #define FINISHED     'f'
 
+#define NEGATIVE_INFINITY -1e10
+
 /*
  * function:  pvec
  * description:  utility function that prints the elements of
@@ -769,11 +771,27 @@ class graph {
      *
      *       path: int vector in which the constructed path is stored.
      *
+     * ?
+     * With DEST. are we meant to traverse path until dest is discovered
+     * 
+     * Path is the PBR return path
+     * ?
+     * 
+     * 
+     * 
+     * 
      * returns:  true on success; false otherwise.
      *           failure:  there is no encoded path ending at vertex
      *              dest (see discussion below);
      *              OR, the rpt vector is not of the correct dimension.
      *
+     * ?
+     * How do we validate the rpt vector
+     * <- Seems like dest is the end node we're searching for in the
+     * ?
+     * 
+     * 
+     * 
      * Notes:  predecessor conventions:
      *
      *      SOURCE VERTICES:
@@ -796,18 +814,55 @@ class graph {
      *          In this situation, the path vector is made empty and
      *          false is returned.
      *
+     * 
+     * 
+     * 
+     * 
      *  RUNTIME:  O(|p|) where |p| is the number of edges on 
      *    the path extracted.
      *
      */
+    /*
+    ? Is path extracted each time
+    ? Which way do we push? Front or Back ?
+    */
     bool extract_path(const vector<vertex_label> & rpt, 
         int dest, vector<int> & path) {
-      path.clear();
+      path.clear(); 
+
       if(rpt.size() != num_nodes())
         return false;
+      
+      int current = dest;
+      while(current != rpt[current].pred){//Loops while 
+        path.push_back(current);
+        current = rpt[current].pred;
+
+        if(current == -1){
+          path.clear();
+          return false;//No ending
+        }
+      }
+
+      path.push_back(current);//Adds last element
+
+      
+
+      return true;
+      /*
+        iterate rpt
+          - Check if dest
+            -Then store in path
+          next element
+          if end of rpt && no element discovered return false
+          else return true when dest is discovered
+
+
+          ? Validating that we're operating on |p| time
+      */
 
       // your code here!
-      return true;  // placeholder
+      // return true;  // placeholder
     }
 
     /*
@@ -819,6 +874,10 @@ class graph {
      *
      *        The "length" of a path is the SUM OF THE WEIGHTS OF THE
      *        EDGES ON THE PATH.
+     * 
+     * ?
+     *  edgeSum = sum(edges)
+     * ?
      *
      *        On completion, the results are stored in the vector rpt.
      *        For each vertex u (as an intID),
@@ -840,7 +899,32 @@ class graph {
 
       if(has_cycle())
         return false;
-      // your code here...
+      
+      vector<int> topo_order;
+      if(!topo_sort(topo_order))//Topological sort
+        return false;
+
+      for(auto & label : rpt){
+        label.dist = NEGATIVE_INFINITY;//Set for comparision value
+        label.pred = -1;//Init
+      }
+
+      for(auto & src : topo_order){//Iterate over ordered topo graph
+        if(rpt[src].dist == NEGATIVE_INFINITY)//Src vert
+          rpt[src].dist = 0;
+        
+        for(auto & e : vertices[src].outgoing){
+          //Vars init; potential
+          int dest = e.vertex_id;
+          double newDist = (rpt[src].dist + e.weight);//Calculates newest distant
+
+          if(newDist > rpt[dest].dist){//Longer path discovered
+            rpt[dest].dist = newDist;//new longest path
+            rpt[dest].pred = src;
+          }
+        }
+      }
+
       return true;
     }
 
@@ -911,7 +995,58 @@ class graph {
     bool dag_num_paths(vector<vertex_label> & rpt) {
       if(has_cycle())
         return false;
-      // your code here...
+
+      vector<int> topo_order;
+      if(!topo_sort(topo_order))//Ensure DAG
+        return false;
+
+      //Init size and path counts with a standard size 0
+      vector<int> output_paths(num_nodes(), 0);
+
+
+      //Structs to identify I/O vertices
+      vector<bool> is_input(num_nodes(), true);
+      vector<bool> is_output(num_nodes(), true);
+
+      //Determination of which vertices are input and output
+      //! Deeper commenting
+      for(const auto & v : vertices){
+          for(const auto & o : v.outgoing)//
+            is_input[o.vertex_id] = false;
+          
+          for(const auto & i : v.incoming)
+            is_output[i.vertex_id] = false;
+      }
+
+      //calculating the input paths
+      for(int node : topo_order){
+        if(is_input[node])//Identifies input vertice
+          rpt[node].npaths = 1;
+
+        for(auto & v : vertices[node].outgoing){
+          rpt[v.vertex_id].npaths += rpt[node].npaths;
+        }
+      }
+
+      /*
+      In reverse topological order 
+      we are going to calculate the input paths
+      */
+      // Calculate output paths in reverse topological order
+    for (auto it = topo_order.rbegin(); it != topo_order.rend(); ++it) {
+        int u = *it;
+        if (is_output[u])
+            output_paths[u] = 1;
+
+        for (auto& e : vertices[u].incoming) {
+            output_paths[e.vertex_id] += output_paths[u];
+        }
+    }
+
+    // Combine input and output paths to compute IO paths
+    for (int u = 0; u < num_nodes(); ++u) {
+        rpt[u].npaths *= output_paths[u];
+    }
       return true;
     }
 
