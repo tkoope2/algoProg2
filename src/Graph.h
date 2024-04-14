@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <fstream>
+#include <functional>
 
 using std::string;
 using std::vector;
@@ -1065,13 +1066,37 @@ class graph {
      *
      * RUNTIME:  O(V+E)
      */
+    //Order contains vertex ID values
     bool valid_topo_order(const vector<int> & order) {
       if(has_cycle())
         return false;
+
+      vector<int> index(num_nodes(), -1);//Initalize var's to -1
+      for(int i = 0; i < order.size(); i++){
+        int vert = order[i];
+        if(vert < 0 || vert >= num_nodes())//Validate vertex ID
+          return false;
+        index[vert] = i;
+      }
+
+
+      /* Verify topological order
+      done by checking all edges*/
+      for(int i = 0; i < num_nodes(); ++i){
+        for(const auto & e : vertices[i].outgoing){//Examine all outgoing edges
+          int v = e.vertex_id;
+          //Verify node order i -> v
+          if(index[i] >= index[v])
+            return false;//Out of order
+        }
+      }
+
+
       return true;
 
     }
 
+  
     /*
      * TODO 30 points
      *
@@ -1138,7 +1163,43 @@ class graph {
       if(has_cycle() || target < 0 || target >= num_nodes())
         return false;
 
-      // your code here!
+      //Var init
+      vector<bool> visited(num_nodes(), false);//None visited setup
+      vector<int> currPath;
+
+      /*Recursive lamda function 
+      */
+      std::function<void(int)>dfs_helper;//Forwarding
+      dfs_helper = [this, &visited, &paths, &currPath, &target, &dfs_helper](int node) mutable{
+        visited[node] = true;
+        currPath.push_back(node);
+
+        //Base case when target found
+        if(node == target){
+          string pthString;
+          for(int i = 0; i < num_nodes(); i++){
+            pthString += id2name(currPath[i]);
+          }
+          paths.push_back(pthString);
+        }else{//Recursive case to traverse deeper
+          for(auto & e : this->vertices[node].outgoing){//Go to outgoing edge
+            if(!visited[e.vertex_id])
+              dfs_helper(e.vertex_id);//Next node; rec call
+          }
+        }
+
+        //Back tracking
+        visited[node] = false;
+        currPath.pop_back();
+      };
+
+
+
+      for(int i = 0; i < num_nodes(); i++){
+        if(vertices[i].incoming.empty() && !visited[i])
+          dfs_helper(i);
+      }
+    
       return true;
     }
 
