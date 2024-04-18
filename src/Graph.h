@@ -7,6 +7,8 @@
 #include <sstream>
 #include <fstream>
 #include <functional>
+#include <algorithm>
+#include <iterator>
 
 using std::string;
 using std::vector;
@@ -847,7 +849,7 @@ class graph {
 
       path.push_back(current);//Adds last element
 
-      
+      std::reverse(path.begin(), path.end());
 
       return true;
       /*
@@ -865,6 +867,9 @@ class graph {
       // your code here!
       // return true;  // placeholder
     }
+
+
+
 
     /*
      *  TODO 30 points
@@ -905,29 +910,39 @@ class graph {
       if(!topo_sort(topo_order))//Topological sort
         return false;
 
+      rpt.resize(vertices.size());
       for(auto & label : rpt){
         label.dist = NEGATIVE_INFINITY;//Set for comparision value
         label.pred = -1;//Init
+        // label.state = UNDISCOVERED;
       }
 
-      for(auto & src : topo_order){//Iterate over ordered topo graph
-        if(rpt[src].dist == NEGATIVE_INFINITY)//Src vert
+
+
+      for(int src : topo_order){//Iterate over ordered topo graph
+        if(rpt[src].dist == NEGATIVE_INFINITY){//Src vert
+          rpt[src].pred = src;
           rpt[src].dist = 0;
+        }
         
         for(auto & e : vertices[src].outgoing){
           //Vars init; potential
           int dest = e.vertex_id;
-          double newDist = (rpt[src].dist + e.weight);//Calculates newest distant
-
+          double newDist = rpt[src].dist + e.weight;//Calculates newest distant
+          // std::cout << "Testing\n";
+          // fflush(stdout);
           if(newDist > rpt[dest].dist){//Longer path discovered
             rpt[dest].dist = newDist;//new longest path
             rpt[dest].pred = src;
           }
         }
       }
-
       return true;
     }
+
+
+
+
 
     /*
      *  TODO 30 points
@@ -1091,7 +1106,6 @@ class graph {
         }
       }
 
-
       return true;
 
     }
@@ -1177,7 +1191,9 @@ class graph {
         //Base case when target found
         if(node == target){
           string pthString;
-          for(int i = 0; i < num_nodes(); i++){
+          for(int i = 0; i < currPath.size(); i++){
+            if(pthString.length() > 0)
+              pthString += " ";
             pthString += id2name(currPath[i]);
           }
           paths.push_back(pthString);
